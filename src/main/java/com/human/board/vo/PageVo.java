@@ -10,7 +10,7 @@ import lombok.ToString;
 public class PageVo {
 
     private int page = 1;        // 현재 페이지
-    private int size = 10;       // 페이지당 게시글 수
+    private int size = 3;        // 페이지당 게시글 수
     private int totalCount;      // 전체 게시글 수
     private int offset;          // DB 조회 시작 위치
     private int totalPages;      // 전체 페이지 수

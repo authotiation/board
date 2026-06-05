@@ -4,6 +4,7 @@ import com.human.board.mapper.BoardFileMapper;
 import com.human.board.utils.FileUploadUtil;
 import com.human.board.vo.BoardFileVo;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -16,7 +17,8 @@ public class BoardFileServiceImpl implements BoardFileService {
 
     private final BoardFileMapper boardFileMapper;
 
-    private static final String UPLOAD_PATH = "C:/upload";
+    @Value("${upload.path}")
+    private String UPLOAD_PATH;
 
     // 게시글 번호로 파일 목록 조회
     @Override

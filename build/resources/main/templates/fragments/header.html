@@ -5,14 +5,14 @@
 
 <header class="site-header" th:fragment="header">
     <div class="header-inner">
-        <a href="/" class="logo">PhotoBook</a>
+        <a href="/" class="logo">Board</a>
 
         <nav class="nav">
             <a href="/">홈</a>
-            <a href="/photos">사진첩</a>
+            <a href="/boards">게시판</a>
 
             <!-- 로그인한 회원만 글쓰기 보임 -->
-            <a sec:authorize="isAuthenticated()" href="/photos/write">사진 등록</a>
+            <a sec:authorize="isAuthenticated()" href="/boards/write">글 등록</a>
 
             <!-- 비회원 -->
             <a sec:authorize="isAnonymous()" href="/login">로그인</a>
@@ -24,16 +24,13 @@
             </span>
 
             <!-- 관리자 메뉴 -->
-            <a sec:authorize="hasRole('ADMIN')" href="/admin/photos">관리자</a>
+            <a sec:authorize="hasRole('ADMIN')" href="/admin/boards">관리자</a>
 
             <!-- 로그아웃 -->
             <form sec:authorize="isAuthenticated()"
                   th:action="@{/logout}"
                   method="post"
                   style="display:inline;">
-                <input type="hidden"
-                       th:name="${_csrf.parameterName}"
-                       th:value="${_csrf.token}">
                 <button type="submit">로그아웃</button>
             </form>
         </nav>
