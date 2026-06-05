@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>사진첩</title>
+    <link rel="stylesheet" th:href="@{/css/photo-style.css}">
+</head>
+<body>
+
+<div th:replace="~{fragments/header :: header}"></div>
+
+<main class="container">
+    <div class="toolbar">
+        <h2 class="section-title">사진첩</h2>
+
+        <div class="search-box">
+            <form th:action="@{/photos}" method="get" style="display:flex; gap:8px;">
+                <input type="text"
+                       name="keyword"
+                       th:value="${keyword}"
+                       placeholder="제목 또는 작성자 검색">
+                <button type="submit" class="btn btn-outline">검색</button>
+            </form>
+
+            <!-- 회원만 글쓰기 가능 -->
+            <a sec:authorize="isAuthenticated()"
+               href="/photos/write"
+               class="btn btn-primary">
+                사진 등록
+            </a>
+
+            <!-- 비회원은 클릭 시 로그인 안내 -->
+            <button sec:authorize="isAnonymous()"
+                    type="button"
+                    class="btn btn-primary"
+                    onclick="needLogin()">
+                사진 등록
+            </button>
+        </div>
+    </div>
+
+    <div th:if="${photos == null or #lists.isEmpty(photos)}" class="empty-box">
+        등록된 사진글이 없습니다.
+    </div>
+
+    <div class="card-grid" th:if="${photos != null and !#lists.isEmpty(photos)}">
+        <article class="photo-card" th:each="photo : ${photos}">
+            <a th:href="@{/photos/{id}(id=${photo.id})}">
+                <img class="photo-thumb"
+                     th:src="@{/uploads/{fileName}(fileName=${photo.savedName})}"
+                     alt="사진 이미지">
+            </a>
+
+            <div class="photo-card-body">
+                <h3 class="photo-card-title">
+                    <a th:href="@{/photos/{id}(id=${photo.id})}"
+                       th:text="${photo.title}">
+                        사진 제목
+                    </a>
+                </h3>
+
+                <div class="photo-meta">
+                    <span th:text="|작성자: ${photo.writerName}|">작성자</span>
+                    <span th:text="${#temporals.format(photo.createdAt, 'yyyy-MM-dd')}">작성일</span>
+                </div>
+
+                <div class="photo-card-actions">
+                    <a th:href="@{/photos/{id}(id=${photo.id})}"
+                       class="btn btn-outline">
+                        조회
+                    </a>
+
+                    <!-- 회원이며 본인 글이거나 관리자일 때 수정 가능 -->
+                    <a sec:authorize="isAuthenticated()"
+                       th:if="${#authentication.name == photo.writer or #authorization.expression('hasRole(''ADMIN'')')}"
+                       th:href="@{/photos/{id}/edit(id=${photo.id})}"
+                       class="btn btn-warning">
+                        수정
+                    </a>
+
+                    <!-- 로그인했지만 본인 글도 아니고 관리자도 아니면 권한 없음 -->
+                    <button sec:authorize="isAuthenticated()"
+                            th:if="${#authentication.name != photo.writer and !#authorization.expression('hasRole(''ADMIN'')')}"
+                            type="button"
+                            class="btn btn-warning"
+                            onclick="noPermission()">
+                        수정
+                    </button>
+
+                    <!-- 비회원이면 로그인 안내 -->
+                    <button sec:authorize="isAnonymous()"
+                            type="button"
+                            class="btn btn-warning"
+                            onclick="needLogin()">
+                        수정
+                    </button>
+                </div>
+            </div>
+        </article>
+    </div>
+</main>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+
+<script>
+    function needLogin() {
+        alert("로그인이 필요한 기능입니다.");
+        location.href = "/login";
+    }
+
+    function noPermission() {
+        alert("권한이 없습니다. 본인이 작성한 글만 수정하거나 삭제할 수 있습니다.");
+    }
+</script>
+
+</body>
+</html>
