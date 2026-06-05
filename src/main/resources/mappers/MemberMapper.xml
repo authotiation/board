@@ -1,0 +1,44 @@
+<mapper namespace="com.human.board.mapper.MemberMapper">
+
+    <insert id="insertMember" parameterType="com.human.board.vo.MemberVO">
+        INSERT INTO member (
+            id,
+            name,
+            password,
+            role,
+            phone,
+            email
+        )
+        VALUES (
+            #{id},
+            #{name},
+            #{password},
+            #{role},
+            #{phone},
+            #{email}
+        )
+    </insert>
+
+    <select id="findById"
+            parameterType="String"
+            resultType="com.human.board.vo.MemberVO">
+        SELECT
+            id,
+            name,
+            password,
+            role,
+            phone,
+            email
+        FROM member
+        WHERE id = #{id}
+    </select>
+
+    <select id="countById"
+            parameterType="String"
+            resultType="int">
+        SELECT COUNT(*)
+        FROM member
+        WHERE id = #{id}
+    </select>
+
+</mapper>
